@@ -1,16 +1,43 @@
 import React from "react";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import "./App.css";
-
+// cmds: npm run start, npm run test:cov, ctrl+c to cancel run start
+//last edit
 function App(): JSX.Element {
     return (
         <div className="App">
             <header className="App-header">
                 UD CISC275 with React Hooks and TypeScript - Nabiha Syed
             </header>
+            <Container>
+                <Row>
+                    <Col>
+                        <div className="red-box">
+                            <img
+                                src="https://picsum.photos/id/870/200/300?blur=1"
+                                alt="A lovely image of a lonely lighthouse"
+                            />
+                        </div>
+                    </Col>
+                    <Col>
+                        <h1>A Collection of Fragments</h1>
+                        <ul>
+                            <li>Explore</li>
+                            <li>Search</li>
+                            <li>Reinvent</li>
+                        </ul>
+                    </Col>
+                </Row>
+            </Container>
             <p>
                 Edit <code>src/App.tsx</code> and save. This page will
                 automatically reload. Hello World.
             </p>
+            <div className="red-box">
+                <Button onClick={() => console.log("Hello World!")}>
+                    Log Hello World
+                </Button>
+            </div>
         </div>
     );
 }
