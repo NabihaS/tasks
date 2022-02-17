@@ -1,8 +1,7 @@
 import React from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import "./App.css";
-// cmds: npm run start, npm run test:cov, ctrl+c to cancel run start
-//last edit
+// cmds: npm run start, npm run test:cov, ctrl+c to cancel run start, git push --set-upstream origin /solved-html-css/, CMD+K+S for shortcuts, OPT+CMD+S for save all
 function App(): JSX.Element {
     return (
         <div className="App">
