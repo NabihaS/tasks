@@ -25,6 +25,7 @@ function App(): JSX.Element {
                             <li>Search</li>
                             <li>Reinvent</li>
                         </ul>
+                        <div className="red-box"></div>
                     </Col>
                 </Row>
             </Container>
@@ -32,11 +33,9 @@ function App(): JSX.Element {
                 Edit <code>src/App.tsx</code> and save. This page will
                 automatically reload. Hello World.
             </p>
-            <div className="red-box">
-                <Button onClick={() => console.log("Hello World!")}>
-                    Log Hello World
-                </Button>
-            </div>
+            <Button onClick={() => console.log("Hello World!")}>
+                Log Hello World
+            </Button>
         </div>
     );
 }
