@@ -1,3 +1,5 @@
+import { isNullishCoalesce } from "typescript";
+
 /**
  * Consume an array of numbers, and return a new array containing
  * JUST the first and last number. If there are no elements, return
@@ -5,7 +7,7 @@
  * the number twice.
  */
 export function bookEndList(numbers: number[]): number[] {
-    if (numbers.length < 1) {
+    if (numbers.length === 0) {
         return [];
     } else if (numbers.length === 1) {
         const doubledList = [...numbers, ...numbers];
@@ -33,7 +35,7 @@ export function tripleNumbers(numbers: number[]): number[] {
  * the number cannot be parsed as an integer, convert it to 0 instead.
  */
 export function stringsToIntegers(numbers: string[]): number[] {
-    const ints = numbers.map((num: string): number => parseInt(num));
+    const ints = numbers.map((num: string): number => parseInt(num) || 0);
     //unsure ab convert to 0 part
     return ints;
 }
@@ -52,7 +54,7 @@ export const removeDollars = (amounts: string[]): number[] => {
     const dollars = amounts.map((amount: string): string =>
         amount.charAt(0) === "$" ? amount.substring(1) : amount
     );
-    const ints = dollars.map((num: string): number => parseInt(num));
+    const ints = dollars.map((num: string): number => parseInt(num) || 0);
     return ints;
 };
 
@@ -62,14 +64,13 @@ export const removeDollars = (amounts: string[]): number[] => {
  * in question marks ("?").
  */
 export const shoutIfExclaiming = (messages: string[]): string[] => {
-    //create new list w spread
     // filter OUT questions bc filter returns list WITH condition
     //map thru and modify exclaims
     const noquestions = messages.filter(
-        (message: string): boolean => message.charAt(length - 1) != "?"
+        (message: string): boolean => message.includes("?") === false
     );
     const newlist = noquestions.map((message: string): string =>
-        message.charAt(length - 1) === "!" ? message.toUpperCase() : message
+        message.includes("!") ? message.toUpperCase() : message
     );
     return newlist;
 };
@@ -154,11 +155,11 @@ export function injectPositive(values: number[]): number[] {
             (value: number): boolean => value < 0
         );
         const upToNeg = values.slice(0, firstNeg); // [1, 9,]
-        const sum = values.reduce(
+        const sum = upToNeg.reduce(
             (currentTotal: number, num: number) => currentTotal + num,
             0
         ); //10
-        const afterNeg = values.slice(values[firstNeg + 1], values.length - 1); //[7]
+        const afterNeg = values.slice(firstNeg + 1); //[7]
         const newList = [...upToNeg, values[firstNeg], sum, ...afterNeg];
         return newList;
     }
