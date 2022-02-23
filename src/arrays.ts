@@ -1,5 +1,3 @@
-import { isNullishCoalesce } from "typescript";
-
 /**
  * Consume an array of numbers, and return a new array containing
  * JUST the first and last number. If there are no elements, return
@@ -146,11 +144,7 @@ export function injectPositive(values: number[]): number[] {
             0
         );
         return [...values, sum];
-    }
-    //case for negatives
-    //find index of first neg, copy list up to index using slice
-    //do new list with nums up to neg num, sum, nums after neg value?
-    else {
+    } else {
         const firstNeg = values.findIndex(
             (value: number): boolean => value < 0
         );
