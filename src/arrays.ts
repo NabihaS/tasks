@@ -144,12 +144,7 @@ export function injectPositive(values: number[]): number[] {
             0
         );
         return [...values, sum];
-        // eslint-disable-next-line brace-style
-    }
-    //case for negatives
-    //find index of first neg, copy list up to index using slice
-    //do new list with nums up to neg num, sum, nums after neg value?
-    else {
+    } else {
         const firstNeg = values.findIndex(
             (value: number): boolean => value < 0
         );
