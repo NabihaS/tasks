@@ -1,21 +1,35 @@
+import { stringify } from "querystring";
+import { urlToHttpOptions } from "url";
 import { Answer } from "./interfaces/answer";
 import { Question, QuestionType } from "./interfaces/question";
+import {
+    duplicateQuestion,
+    makeBlankQuestion,
+    renameQuestion
+} from "./objects";
 
 /**
  * Consumes an array of questions and returns a new array with only the questions
  * that are `published`.
  */
 export function getPublishedQuestions(questions: Question[]): Question[] {
-    return [];
+    return questions.filter(
+        (question: Question): boolean => question.published
+    );
 }
 
 /**
  * Consumes an array of questions and returns a new array of only the questions that are
- * considered "non-empty". An empty question has an empty string for its `body` and
+ * considered "non-empty". qAn empty question has an empty string for its `body` and
  * `expected`, and an empty array for its `options`.
  */
 export function getNonEmptyQuestions(questions: Question[]): Question[] {
-    return [];
+    return questions.filter(
+        (question: Question): boolean =>
+            question.body != "" &&
+            question.expected != "" &&
+            question.options.length != 0
+    );
 }
 
 /***
@@ -26,7 +40,14 @@ export function findQuestion(
     questions: Question[],
     id: number
 ): Question | null {
-    return null;
+    const target = questions.find(
+        (question: Question): boolean => question.id === id
+    );
+    if (target) {
+        return target;
+    } else {
+        return null;
+    }
 }
 
 /**
@@ -34,7 +55,7 @@ export function findQuestion(
  * with the given `id`.
  */
 export function removeQuestion(questions: Question[], id: number): Question[] {
-    return [];
+    return questions.filter((question: Question): boolean => question.id != id);
 }
 
 /***
@@ -42,21 +63,35 @@ export function removeQuestion(questions: Question[], id: number): Question[] {
  * questions, as an array.
  */
 export function getNames(questions: Question[]): string[] {
-    return [];
+    return questions.map((question: Question): string => question.name);
 }
 
 /***
  * Consumes an array of questions and returns the sum total of all their points added together.
  */
 export function sumPoints(questions: Question[]): number {
-    return 0;
+    return questions.reduce(
+        (currentSum: number, question: Question) =>
+            currentSum + question.points,
+        0
+    );
 }
 
 /***
  * Consumes an array of questions and returns the sum total of the PUBLISHED questions.
  */
 export function sumPublishedPoints(questions: Question[]): number {
-    return 0;
+    //can we fit a ternary within the reduce function or like do this in one line?
+    //or create a new list filtering published, and summing up that
+    const published = questions.filter(
+        (question: Question): boolean => question.published
+    );
+
+    return published.reduce(
+        (currentSum: number, question: Question) =>
+            currentSum + question.points,
+        0
+    );
 }
 
 /***
@@ -77,7 +112,16 @@ id,name,options,points,published
  * Check the unit tests for more examples!
  */
 export function toCSV(questions: Question[]): string {
-    return "";
+    // add header string at beginning of def for questionscSV, or in return statement as string, orrr
+    //"id,name,options,points,published\n"
+    const questionsCSV = questions
+        .map(
+            (question: Question): string =>
+                `${question.id},${question.name},${question.options.length},${questions.points},${questions.published}`
+        )
+        .join("\n");
+
+    return questionsCSV;
 }
 
 /**
@@ -86,6 +130,8 @@ export function toCSV(questions: Question[]): string {
  * making the `text` an empty string, and using false for both `submitted` and `correct`.
  */
 export function makeAnswers(questions: Question[]): Answer[] {
+    //creates an array of objects using info from another array of objects
+    const answers = questions.map;
     return [];
 }
 
@@ -94,7 +140,7 @@ export function makeAnswers(questions: Question[]): Answer[] {
  * each question is now published, regardless of its previous published status.
  */
 export function publishAll(questions: Question[]): Question[] {
-    return [];
+    return { ...questions, published: true };
 }
 
 /***
@@ -102,7 +148,18 @@ export function publishAll(questions: Question[]): Question[] {
  * are the same type. They can be any type, as long as they are all the SAME type.
  */
 export function sameType(questions: Question[]): boolean {
-    return false;
+    //findIndex for first element
+    //use reduce fxn, but the sum in this case is the boolean that "and" the results togethte
+    //other way: create new list with just question types, then check if it includes both types
+    const typefirst = questions.find(
+        (question: Question): boolean =>
+            question.type === "multiple_choice_question" ||
+            question.type === "short_answer_question"
+    );
+    return questions.reduce(
+        (currentType: string, same: boolean) => currentType === same,
+        typefirst
+    );
 }
 
 /***
@@ -116,7 +173,8 @@ export function addNewQuestion(
     name: string,
     type: QuestionType
 ): Question[] {
-    return [];
+    const newquestion = makeBlankQuestion(id, name, type);
+    return { ...questions, newquestion };
 }
 
 /***
@@ -129,7 +187,12 @@ export function renameQuestionById(
     targetId: number,
     newName: string
 ): Question[] {
-    return [];
+    return questions.map(
+        (question: Question): Question =>
+            question.id === targetId
+                ? renameQuestion(question, newName)
+                : question
+    );
 }
 
 /***
@@ -144,7 +207,25 @@ export function changeQuestionTypeById(
     targetId: number,
     newQuestionType: QuestionType
 ): Question[] {
-    return [];
+    //helper function
+    function changeQuestionType(
+        question: Question,
+        newtype: QuestionType
+    ): Question {
+        const newquest = { ...question, type: newtype };
+        if (newquest.type != "multiple_choice_question") {
+            newquest.options = [];
+        }
+        return newquest;
+    }
+    return questions.map(
+        (question: Question): Question =>
+            question.id === targetId
+                ? changeQuestionType(question, newQuestionType)
+                : question
+    );
+    //ok u made this longer than it needed to be bc u didnt know why ur map wasnt working
+    //remember u can modify a field in a spread operator but just list the field dont specify its object before it
 }
 
 /**
@@ -163,7 +244,24 @@ export function editOption(
     targetOptionIndex: number,
     newOption: string
 ) {
-    return [];
+    //helper function for option
+    function changeOption(question: Question): Question {
+        if (targetOptionIndex === -1) {
+            const newoptions = { ...question.options, newOption };
+            return { ...question, options: newoptions };
+        } else {
+            const newoptions = question.options.splice(
+                targetOptionIndex,
+                1,
+                newOption
+            );
+            return { ...question, options: newoptions };
+        }
+    }
+    return questions.map(
+        (question: Question): Question =>
+            question.id === targetId ? changeOption(question) : question
+    );
 }
 
 /***
@@ -177,5 +275,17 @@ export function duplicateQuestionInArray(
     targetId: number,
     newId: number
 ): Question[] {
-    return [];
+    //find question to duplicate and its index
+    const questDup = questions.find(
+        (question: Question): boolean => question.id === targetId
+    );
+    const ogInd = questions.findIndex(
+        (question: Question): boolean => question.id === targetId
+    );
+    const newArr = questions.slice(
+        ogInd + 1,
+        0,
+        duplicateQuestion(newId, questDup)
+    );
+    return newArr;
 }
