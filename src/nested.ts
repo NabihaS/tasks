@@ -1,5 +1,5 @@
-import { stringify } from "querystring";
-import { urlToHttpOptions } from "url";
+// import { stringify } from "querystring";
+// import { urlToHttpOptions } from "url";
 import { Answer } from "./interfaces/answer";
 import { Question, QuestionType } from "./interfaces/question";
 import {
@@ -264,7 +264,6 @@ export function editOption(
             const newoptions = [...question.options, newOption];
             //or question.options.splice(-1, 0, newOption)
             // or splice (questions.options.length)
-            // or = [...question.options, newOption]
             return { ...question, options: newoptions };
         } else {
             const newoptions = [...question.options];
