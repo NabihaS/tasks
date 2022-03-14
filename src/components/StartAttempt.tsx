@@ -16,7 +16,6 @@ export function StartAttempt(): JSX.Element {
     function Mulligan(): void {
         setAttempts(attempts + 1);
     }
-    // attempts > 0 thing
     return (
         <div>
             Current Attempts: <span>{attempts}</span>
