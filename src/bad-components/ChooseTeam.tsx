@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Button, Row, Col } from "react-bootstrap";
-import { StringDecoder } from "string_decoder";
 
 const PEOPLE = [
     "Alan Turing",
@@ -25,6 +24,7 @@ export function ChooseTeam(): JSX.Element {
     function clearTeam() {
         const newteam: string[] = [];
         setTeam(newteam);
+        setAllOptions(PEOPLE);
     }
 
     return (
